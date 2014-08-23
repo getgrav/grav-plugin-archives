@@ -1,0 +1,10 @@
+enabled: true
+built_in_css: true
+date_display_format: 'F Y'
+show_count: true
+limit: 12
+order:
+    by: date
+    dir: desc
+filters:
+    category: blog
