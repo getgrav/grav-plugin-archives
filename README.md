@@ -10,6 +10,16 @@ You should now have all the plugin files under
 
 	/your/site/grav/user/plugins/archives
 
+# Add Taxonomy
+
+### NOTE: VERY IMPORTANT!
+
+The plugin wil not function properly unless you tell Grav to pay attention to the `month` taxonomy type.  You will need to append this to the `taxonomies` property in your `user/config/site.yaml` file. You should copy over the default value in `system/config/site.yaml` into your user configuration.  It could look something like this:
+
+```
+taxonomies: [category,tag,month]
+```
+
 >> NOTE: This plugin is a modular component for Grav which requires [Grav](http://github.com/getgrav/grav), the [Error](https://github.com/getgrav/grav-plugin-error) and [Problems](https://github.com/getgrav/grav-plugin-problems) plugins, and a theme to be installed in order to operate.
 
 # Usage
