@@ -1,6 +1,6 @@
 # Grav Archives Plugin
 
-`Archives` is a [Grav](http://github.com/getgrav/grav) plugin that automatically appends a `month_year` taxonomy to all pages. It then provides a `partials\archives.html.twig` template which you can include in a blog sidebar, that then is able to create links that will display pages from that month/year.  This is a very handy feature to have for blogs.things going
+`Archives` is a [Grav](http://github.com/getgrav/grav) plugin that automatically appends a `month_year` taxonomy to all pages. It then provides a `partials\archives.html.twig` template which you can include in a blog sidebar, that then is able to create links that will display pages from that month/year.  This is a very handy feature to have for blogs.
 
 # Installation
 
