@@ -1,6 +1,17 @@
-name: Archives Plugin
-version: 1.0.0
-description: Provides the ability to list pages by month and year
+name: Archives
+version: 1.0.1
+description: The **Archives** plugin creates links for pages grouped by month/year
+icon: university
+author:
+  name: Team Grav
+  email: devs@getgrav.org
+  url: http://getgrav.org
+homepage: https://github.com/getgrav/grav-plugin-archives
+demo: http://demo.getgrav.org/blog-skeleton
+keywords: archives, plugin, blog, month, year, date, navigation, history
+bugs: https://github.com/getgrav/grav-plugin-archives/issues
+license: MIT
+
 validation: strict
 
 form:
