@@ -7,7 +7,7 @@ use Grav\Common\Page\Collection;
 use Grav\Common\Page\Page;
 use Grav\Common\Debugger;
 use Grav\Common\Taxonomy;
-use Grav\Component\EventDispatcher\Event;
+use RocketTheme\Toolbox\Event\Event;
 
 class ArchivesPlugin extends Plugin
 {
@@ -43,11 +43,11 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
-        // Get the page header 
+        // Get the page header
         $page = $event['page'];
         $header = $page->header();
         $taxonomy = $page->taxonomy();
-  
+
         // If there's a date set, let's check the month taxonomy:
         if (!isset($taxonomy['month'])) {
             // none found, let's create one based on date
@@ -57,7 +57,7 @@ class ArchivesPlugin extends Plugin
             // set the modified taxonomy back on the page object
             $page->taxonomy($taxonomy);
         }
-       
+
     }
 
 
@@ -96,7 +96,7 @@ class ArchivesPlugin extends Plugin
             foreach ($collection as $page) {
                 // update the start date if the page date is older
                 $start_date = $page->date() < $start_date ? $page->date() : $start_date;
-                
+
                 $archives[date($date_format,$page->date())][] = $page;
             }
         }
