@@ -21,18 +21,30 @@ class ArchivesPlugin extends Plugin
      */
     public static function getSubscribedEvents() {
         return [
+            'onPluginsInitialized' => ['onPluginsInitialized', 0],
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
             'onPageProcessed' => ['onPageProcessed', 0],
             'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
         ];
     }
 
+    /**
+     * Initialize configuration
+     */
+    public function onPluginsInitialized()
+    {
+        if ($this->isAdmin()) {
+            $this->active = false;
+        }
+    }
 
     /**
      * Add current directory to twig lookup paths.
      */
     public function onTwigTemplatePaths()
     {
+        if (!$this->active) return;
+
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
     }
 
@@ -43,6 +55,8 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
+        if (!$this->active) return;
+
         // Get the page header
         $page = $event['page'];
         $header = $page->header();
@@ -66,6 +80,8 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigSiteVariables()
     {
+        if (!$this->active) return;
+
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
         $pages = $this->grav['pages'];
