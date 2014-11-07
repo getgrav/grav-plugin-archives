@@ -80,7 +80,9 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigSiteVariables()
     {
-        if (!$this->active) return;
+        if (!$this->active) {
+            return;
+        }
 
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
@@ -93,16 +95,11 @@ class ArchivesPlugin extends Plugin
 
         // get the plugin filters setting
         $filters = (array) $this->config->get('plugins.archives.filters');
+        $operator = $this->config->get('plugins.archives.filter_combinator');
 
         if (count($filters) > 0) {
             $collection = new Collection();
-            // loop over the filters configured for archives
-            foreach ($filters as $taxonomy => $items) {
-                // items found for this taxonomy, add them to the collection
-                if (isset($items)) {
-                    $collection->append($taxonomy_map->findTaxonomy([$taxonomy => $items])->toArray());
-                }
-            }
+            $collection->append($taxonomy_map->findTaxonomy($filters, $operator)->toArray());
 
             // reorder the collection based on settings
             $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'));
@@ -113,7 +110,7 @@ class ArchivesPlugin extends Plugin
                 // update the start date if the page date is older
                 $start_date = $page->date() < $start_date ? $page->date() : $start_date;
 
-                $archives[date($date_format,$page->date())][] = $page;
+                $archives[date($date_format, $page->date())][] = $page;
             }
         }
 

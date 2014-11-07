@@ -91,5 +91,17 @@ form:
 
     filters.category:
       type: text
+      label: Category filter
+      help: Comma separated list of category names
+      validate:
+        type: commalist
+
+    filter_combinator:
+      type: select
       size: medium
-      label: Category Filter
+      classes: fancy
+      label: Filter Combinator
+      default: and
+      options:
+        and: And - Boolean &&
+        or: Or - Boolean ||
