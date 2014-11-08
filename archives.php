@@ -19,7 +19,8 @@ class ArchivesPlugin extends Plugin
     /**
      * @return array
      */
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return [
             'onPluginsInitialized' => ['onPluginsInitialized', 0],
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
@@ -43,7 +44,9 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigTemplatePaths()
     {
-        if (!$this->active) return;
+        if (!$this->active) {
+            return;
+        }
 
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
     }
@@ -55,7 +58,9 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
-        if (!$this->active) return;
+        if (!$this->active) {
+            return;
+        }
 
         // Get the page header
         $page = $event['page'];
