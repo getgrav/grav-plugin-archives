@@ -19,20 +19,35 @@ class ArchivesPlugin extends Plugin
     /**
      * @return array
      */
-    public static function getSubscribedEvents() {
+    public static function getSubscribedEvents()
+    {
         return [
+            'onPluginsInitialized' => ['onPluginsInitialized', 0],
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
             'onPageProcessed' => ['onPageProcessed', 0],
             'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
         ];
     }
 
+    /**
+     * Initialize configuration
+     */
+    public function onPluginsInitialized()
+    {
+        if ($this->isAdmin()) {
+            $this->active = false;
+        }
+    }
 
     /**
      * Add current directory to twig lookup paths.
      */
     public function onTwigTemplatePaths()
     {
+        if (!$this->active) {
+            return;
+        }
+
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
     }
 
@@ -43,6 +58,10 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
+        if (!$this->active) {
+            return;
+        }
+
         // Get the page header
         $page = $event['page'];
         $header = $page->header();
@@ -66,6 +85,10 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigSiteVariables()
     {
+        if (!$this->active) {
+            return;
+        }
+
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
         $pages = $this->grav['pages'];
@@ -77,16 +100,11 @@ class ArchivesPlugin extends Plugin
 
         // get the plugin filters setting
         $filters = (array) $this->config->get('plugins.archives.filters');
+        $operator = $this->config->get('plugins.archives.filter_combinator');
 
         if (count($filters) > 0) {
             $collection = new Collection();
-            // loop over the filters configured for archives
-            foreach ($filters as $taxonomy => $items) {
-                // items found for this taxonomy, add them to the collection
-                if (isset($items)) {
-                    $collection->append($taxonomy_map->findTaxonomy([$taxonomy => $items])->toArray());
-                }
-            }
+            $collection->append($taxonomy_map->findTaxonomy($filters, $operator)->toArray());
 
             // reorder the collection based on settings
             $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'));
@@ -97,7 +115,7 @@ class ArchivesPlugin extends Plugin
                 // update the start date if the page date is older
                 $start_date = $page->date() < $start_date ? $page->date() : $start_date;
 
-                $archives[date($date_format,$page->date())][] = $page;
+                $archives[date($date_format, $page->date())][] = $page;
             }
         }
 
