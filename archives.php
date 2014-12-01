@@ -22,10 +22,7 @@ class ArchivesPlugin extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'onPluginsInitialized' => ['onPluginsInitialized', 0],
-            'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
-            'onPageProcessed' => ['onPageProcessed', 0],
-            'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
+            'onPluginsInitialized' => ['onPluginsInitialized', 0]
         ];
     }
 
@@ -36,7 +33,14 @@ class ArchivesPlugin extends Plugin
     {
         if ($this->isAdmin()) {
             $this->active = false;
+            return;
         }
+
+        $this->enable([
+            'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
+            'onPageProcessed' => ['onPageProcessed', 0],
+            'onTwigSiteVariables' => ['onTwigSiteVariables', 0]
+        ]);
     }
 
     /**
@@ -44,10 +48,6 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigTemplatePaths()
     {
-        if (!$this->active) {
-            return;
-        }
-
         $this->grav['twig']->twig_paths[] = __DIR__ . '/templates';
     }
 
@@ -58,10 +58,6 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
-        if (!$this->active) {
-            return;
-        }
-
         // Get the page header
         $page = $event['page'];
         $header = $page->header();
@@ -76,19 +72,13 @@ class ArchivesPlugin extends Plugin
             // set the modified taxonomy back on the page object
             $page->taxonomy($taxonomy);
         }
-
     }
-
 
     /**
      * Set needed variables to display breadcrumbs.
      */
     public function onTwigSiteVariables()
     {
-        if (!$this->active) {
-            return;
-        }
-
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
         $pages = $this->grav['pages'];
