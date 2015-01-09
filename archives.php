@@ -84,7 +84,7 @@ class ArchivesPlugin extends Plugin
         $pages = $this->grav['pages'];
 
         // Get current datetime
-        $start_date = strtotime('now');
+        $start_date = time();
 
         $archives = array();
 
