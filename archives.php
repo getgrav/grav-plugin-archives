@@ -67,15 +67,18 @@ class ArchivesPlugin extends Plugin
         $header = $page->header();
         $taxonomy = $page->taxonomy();
 
-        // If there's a date set, let's check the month taxonomy:
-        if (!isset($taxonomy['month'])) {
-            // none found, let's create one based on date
-            $header->taxonomy['month'] = strtolower(date('M_Y', $page->date()));
-            $taxonomy['month'] = array($header->taxonomy['month']);
-
-            // set the modified taxonomy back on the page object
-            $page->taxonomy($taxonomy);
+        // track month taxonomy in "jan_2015" format:
+        if (!isset($taxonomy['archives_month'])) {
+            $taxonomy['archives_month'] = array(strtolower(date('M_Y', $page->date())));
         }
+
+        // track year taxonomy in "2015" format:
+        if (!isset($taxonomy['archives_year'])) {
+            $taxonomy['archives_year'] = array(date('Y', $page->date()));
+        }
+
+        // set the modified taxonomy back on the page object
+        $page->taxonomy($taxonomy);
     }
 
     /**
