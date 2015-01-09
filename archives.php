@@ -36,6 +36,10 @@ class ArchivesPlugin extends Plugin
             return;
         }
 
+        // Dynamically add the needed taxonomy types to the taxonomies config
+        $taxonomy_config = array_merge((array)$this->config->get('site.taxonomies'), ['archives_month', 'archives_year']);
+        $this->config->set('site.taxonomies', $taxonomy_config);
+
         $this->enable([
             'onTwigTemplatePaths' => ['onTwigTemplatePaths', 0],
             'onPageProcessed' => ['onPageProcessed', 0],
