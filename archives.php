@@ -64,7 +64,6 @@ class ArchivesPlugin extends Plugin
     {
         // Get the page header
         $page = $event['page'];
-        $header = $page->header();
         $taxonomy = $page->taxonomy();
 
         // track month taxonomy in "jan_2015" format:
