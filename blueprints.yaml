@@ -89,7 +89,7 @@ form:
         title: Title - based on title field in header
         date: Date - based on date field in header
 
-    filters:
+    filters.category:
       type: selectize
       label: Category filter
       help: Comma separated list of category names
