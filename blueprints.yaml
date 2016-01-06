@@ -1,5 +1,5 @@
 name: Archives
-version: 1.3.0
+version: 1.4.0
 description: The **Archives** plugin creates links for pages grouped by month/year
 icon: university
 author:
@@ -89,7 +89,7 @@ form:
         title: Title - based on title field in header
         date: Date - based on date field in header
 
-    filters:
+    filters.category:
       type: selectize
       label: Category filter
       help: Comma separated list of category names
