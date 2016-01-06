@@ -1,3 +1,11 @@
+# v1.4.0
+## 01/06/2016
+
+1. [](#improved)
+    * Allow for translated months
+1. [](#bugfix)
+    * Fix blueprints by adding the category to filters
+
 # v1.3.0
 ## 08/25/2015
 
