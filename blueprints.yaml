@@ -49,6 +49,7 @@ form:
         'D, m M Y': "Mon, 01 Jan 2014"
         'd-m-y': "01-01-14"
         'jS M Y': "10th Feb 2014"
+        'F Y': "Jan 2015"
 
     show_count:
       type: toggle
