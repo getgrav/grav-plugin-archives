@@ -1,3 +1,9 @@
+# v1.4.1
+## 05/03/2016
+
+1. [](#bugfix)
+    * Fixed translated months
+
 # v1.4.0
 ## 01/06/2016
 

@@ -12,11 +12,6 @@ use RocketTheme\Toolbox\Event\Event;
 class ArchivesPlugin extends Plugin
 {
     /**
-     * @var ArchivesPlugin
-     */
-
-
-    /**
      * @return array
      */
     public static function getSubscribedEvents()
@@ -116,7 +111,7 @@ class ArchivesPlugin extends Plugin
         }
 
         // slice the array to the limit you want
-        $archives = array_slice($archives, 0, intval($this->config->get('plugins.archives.limit')));
+        $archives = array_slice($archives, 0, intval($this->config->get('plugins.archives.limit')), is_string(reset($archives)) ? false : true );
 
         // add the archives_start date to the twig variables
         $this->grav['twig']->twig_vars['archives_show_count'] = $this->config->get('plugins.archives.show_count');
