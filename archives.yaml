@@ -9,4 +9,7 @@ order:
 filter_combinator: and
 filters:
     category: blog
+taxonomy_names:
+    month: archives_month
+    year: archives_year
 

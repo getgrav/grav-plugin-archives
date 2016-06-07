@@ -12,6 +12,16 @@ use RocketTheme\Toolbox\Event\Event;
 class ArchivesPlugin extends Plugin
 {
     /**
+     * @var string
+     */
+    protected $month_taxonomy_name;
+
+    /**
+     * @var string
+     */
+    protected $year_taxonomy_name;
+
+    /**
      * @return array
      */
     public static function getSubscribedEvents()
@@ -31,8 +41,11 @@ class ArchivesPlugin extends Plugin
             return;
         }
 
+        $this->month_taxonomy_name = $this->config->get('plugins.archives.taxonomy_names.month');
+        $this->year_taxonomy_name = $this->config->get('plugins.archives.taxonomy_names.year');
+
         // Dynamically add the needed taxonomy types to the taxonomies config
-        $taxonomy_config = array_merge((array)$this->config->get('site.taxonomies'), ['archives_month', 'archives_year']);
+        $taxonomy_config = array_merge((array)$this->config->get('site.taxonomies'), [$this->month_taxonomy_name, $this->year_taxonomy_name]);
         $this->config->set('site.taxonomies', $taxonomy_config);
 
         $this->enable([
@@ -62,13 +75,13 @@ class ArchivesPlugin extends Plugin
         $taxonomy = $page->taxonomy();
 
         // track month taxonomy in "jan_2015" format:
-        if (!isset($taxonomy['archives_month'])) {
-            $taxonomy['archives_month'] = array(strtolower(date('M_Y', $page->date())));
+        if (!isset($taxonomy[$this->month_taxonomy_name])) {
+            $taxonomy[$this->month_taxonomy_name] = array(strtolower(date('M_Y', $page->date())));
         }
 
         // track year taxonomy in "2015" format:
-        if (!isset($taxonomy['archives_year'])) {
-            $taxonomy['archives_year'] = array(date('Y', $page->date()));
+        if (!isset($taxonomy[$this->year_taxonomy_name])) {
+            $taxonomy[$this->year_taxonomy_name] = array(date('Y', $page->date()));
         }
 
         // set the modified taxonomy back on the page object
