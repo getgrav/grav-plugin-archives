@@ -80,8 +80,17 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigSiteVariables()
     {
+        $page = $this->grav['page'];
+        // If a page exists merge the configs
+        if ($page) {
+            $this->config->set('plugins.archives', $this->mergeConfig($page));
+        }
+
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
+        $taxonomies = [];
+        $find_taxonomy = [];
+
         $pages = $this->grav['pages'];
 
         // Get current datetime
@@ -92,22 +101,49 @@ class ArchivesPlugin extends Plugin
         // get the plugin filters setting
         $filters = (array) $this->config->get('plugins.archives.filters');
         $operator = $this->config->get('plugins.archives.filter_combinator');
+        $new_approach = false;
+        $collection = null;
 
-        if (count($filters) > 0) {
-            $collection = new Collection();
-            $collection->append($taxonomy_map->findTaxonomy($filters, $operator)->toArray());
-
-            // reorder the collection based on settings
-            $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'));
-            $date_format = $this->config->get('plugins.archives.date_display_format');
-
-            // loop over new collection of pages that match filters
-            foreach ($collection as $page) {
-                // update the start date if the page date is older
-                $start_date = $page->date() < $start_date ? $page->date() : $start_date;
-
-                $archives[date($date_format, $page->date())][] = $page;
+        if ( ! $filters || (count($filters) == 1 && !reset($filters))){
+            $collection = $pages->all();
+        } else {
+            foreach ($filters as $key => $filter) {
+                // flatten item if it's wrapped in an array
+                if (is_int($key)) {
+                    if (is_array($filter)) {
+                        $key = key($filter);
+                        $filter = $filter[$key];
+                    } else {
+                        $key = $filter;
+                    }
+                }
+                // see if the filter uses the new 'items-type' syntax
+                if ($key === '@self' || $key === 'self@') {
+                    $new_approach = true;
+                } elseif ($key === '@taxonomy' || $key === 'taxonomy@') {
+                    $taxonomies = $filter === false ? false : array_merge($taxonomies, (array) $filter);
+                } else {
+                    $find_taxonomy[$key] = $filter;
+                }
             }
+            if ($new_approach) {
+                $collection = $page->children();
+            } else {
+                $collection = new Collection();
+                $collection->append($taxonomy_map->findTaxonomy($find_taxonomy, $operator)->toArray());
+            }
+        }
+
+        // reorder the collection based on settings
+        $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'));
+        $date_format = $this->config->get('plugins.archives.date_display_format');
+
+        // loop over new collection of pages that match filters
+        foreach ($collection as $page) {
+            // update the start date if the page date is older
+            $start_date = $page->date() < $start_date ? $page->date() : $start_date;
+
+            $archives[date($date_format, $page->date())][] = $page;
         }
 
         // slice the array to the limit you want
