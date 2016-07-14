@@ -1,3 +1,10 @@
+# v1.5.0
+## 07/14/2016
+
+1. [](#improved)
+    * Allow to configure the taxonomy names that form the URL, instead of hardcoding `archives_month` and `archives_year`
+    * Allow to use @self in the filters, useful when adding the archives into a blog posts listing page
+
 # v1.4.1
 ## 05/03/2016
 

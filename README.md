@@ -43,9 +43,20 @@ order:
     dir: desc
 filters:
     category: blog
+taxonomy_names:
+    month: archives_month
+    year: archives_year
+
 ```
 
 If you need to change any value, then the best process is to copy the [archives.yaml](archives.yaml) file into your `users/config/plugins/` folder (create it if it doesn't exist), and then modify there.  This will override the default settings.
+
+You can also list the current collection, without having to search for a taxonomy term by using
+
+```
+filters:
+    - '@self'
+```
 
 # Template Override
 
