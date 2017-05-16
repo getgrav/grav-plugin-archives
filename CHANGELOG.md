@@ -1,3 +1,9 @@
+# v1.5.1
+## 05/16/2017
+
+1. [](#improved)
+    * Added another date option to blueprints [#7](https://github.com/getgrav/grav-plugin-archives/pull/7)
+
 # v1.5.0
 ## 07/14/2016
 
