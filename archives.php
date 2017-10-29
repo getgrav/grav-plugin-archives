@@ -145,7 +145,7 @@ class ArchivesPlugin extends Plugin
             }
 
             if ($multi_language) {
-                $find_taxonomy[$key] = $language;
+                $find_taxonomy['language'] = $language;
             }
 
             if ($new_approach) {
