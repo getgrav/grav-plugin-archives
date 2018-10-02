@@ -89,7 +89,7 @@ class ArchivesPlugin extends Plugin
     }
 
     /**
-     * Set needed variables to display breadcrumbs.
+     * Set needed variables to display archives.
      */
     public function onTwigSiteVariables()
     {
