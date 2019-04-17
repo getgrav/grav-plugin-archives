@@ -148,7 +148,7 @@ class ArchivesPlugin extends Plugin
         }
 
         // reorder the collection based on settings
-        $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'));
+        $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'))->published();
         $date_format = $this->config->get('plugins.archives.date_display_format');
 
         // loop over new collection of pages that match filters
