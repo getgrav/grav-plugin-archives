@@ -1,5 +1,5 @@
-# v1.5.2
-## mm/dd/2019
+# v1.6.0
+## 04/17/2019
 
 1. [](#improved)
     * Only included published pages in collection [#24](https://github.com/getgrav/grav-plugin-archives/issues/24)
