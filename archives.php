@@ -109,11 +109,15 @@ class ArchivesPlugin extends Plugin
         // Get current datetime
         $start_date = time();
 
+        // Get current language
+        $language = $this->grav['language']->getLanguage();
+
         $archives = array();
 
         // get the plugin filters setting
         $filters = (array) $this->config->get('plugins.archives.filters');
         $operator = $this->config->get('plugins.archives.filter_combinator');
+        $multi_language = $this->config->get('plugins.archives.multilanguage');
         $new_approach = false;
         $collection = null;
 
@@ -139,6 +143,11 @@ class ArchivesPlugin extends Plugin
                     $find_taxonomy[$key] = $filter;
                 }
             }
+
+            if ($multi_language) {
+                $find_taxonomy['language'] = $language;
+            }
+
             if ($new_approach) {
                 $collection = $page->children();
             } else {
