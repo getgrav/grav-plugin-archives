@@ -1,11 +1,10 @@
 <?php
 namespace Grav\Plugin;
 
+use Composer\Autoload\ClassLoader;
+use Grav\Common\Page\Interfaces\PageInterface;
 use Grav\Common\Plugin;
-use Grav\Common\Grav;
 use Grav\Common\Page\Collection;
-use Grav\Common\Page\Page;
-use Grav\Common\Debugger;
 use Grav\Common\Taxonomy;
 use RocketTheme\Toolbox\Event\Event;
 
@@ -27,8 +26,21 @@ class ArchivesPlugin extends Plugin
     public static function getSubscribedEvents()
     {
         return [
-            'onPluginsInitialized' => ['onPluginsInitialized', 0]
+            'onPluginsInitialized' => [
+                ['autoload', 100001],
+                ['onPluginsInitialized', 0]
+            ]
         ];
+    }
+
+    /**
+     * [onPluginsInitialized:100000] Composer autoload.
+     *
+     * @return ClassLoader
+     */
+    public function autoload()
+    {
+        return require __DIR__ . '/vendor/autoload.php';
     }
 
     /**
@@ -70,8 +82,12 @@ class ArchivesPlugin extends Plugin
      */
     public function onPageProcessed(Event $event)
     {
-        // Get the page header
+        /** @var PageInterface $page */
         $page = $event['page'];
+        if (!$page->isPage()) {
+            return;
+        }
+
         $taxonomy = $page->taxonomy();
 
         // track month taxonomy in "jan_2015" format:
@@ -93,7 +109,9 @@ class ArchivesPlugin extends Plugin
      */
     public function onTwigSiteVariables()
     {
+        /** @var PageInterface $page */
         $page = $this->grav['page'];
+
         // If a page exists merge the configs
         if ($page) {
             $this->config->set('plugins.archives', $this->mergeConfig($page));
@@ -109,7 +127,7 @@ class ArchivesPlugin extends Plugin
         // Get current datetime
         $start_date = time();
 
-        $archives = array();
+        $archives = [];
 
         // get the plugin filters setting
         $filters = (array) $this->config->get('plugins.archives.filters');
@@ -117,7 +135,7 @@ class ArchivesPlugin extends Plugin
         $new_approach = false;
         $collection = null;
 
-        if ( ! $filters || (count($filters) == 1 && !reset($filters))){
+        if (!$filters || (count($filters) === 1 && !reset($filters))){
             $collection = $pages->all();
         } else {
             foreach ($filters as $key => $filter) {
@@ -160,7 +178,7 @@ class ArchivesPlugin extends Plugin
         }
 
         // slice the array to the limit you want
-        $archives = array_slice($archives, 0, intval($this->config->get('plugins.archives.limit')), is_string(reset($archives)) ? false : true );
+        $archives = array_slice($archives, 0, (int)$this->config->get('plugins.archives.limit'), is_string(reset($archives)) ? false : true );
 
         // add the archives_start date to the twig variables
         $this->grav['twig']->twig_vars['archives_show_count'] = $this->config->get('plugins.archives.show_count');

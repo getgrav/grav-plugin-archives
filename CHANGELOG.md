@@ -1,3 +1,11 @@
+# v1.6.1
+## mm/dd/2019
+
+1. [](#new)
+    * Pass phpstan level 1 tests
+1. [](#bugfix)
+    * Exclude empty folders from archive
+
 # v1.6.0
 ## 04/17/2019
 
