@@ -3,6 +3,7 @@
 
 1. [](#new)
     * Pass phpstan level 1 tests
+    * Require Grav v.1.6
 1. [](#bugfix)
     * Exclude empty folders from archive
 
