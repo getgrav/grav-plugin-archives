@@ -1,5 +1,5 @@
 name: Archives
-version: 1.6.0
+version: 1.6.1
 description: The **Archives** plugin creates links for pages grouped by month/year
 icon: university
 author:
@@ -11,9 +11,10 @@ demo: http://demo.getgrav.org/blog-skeleton
 keywords: archives, plugin, blog, month, year, date, navigation, history
 bugs: https://github.com/getgrav/grav-plugin-archives/issues
 license: MIT
+dependencies:
+    - { name: grav, version: '>=1.6.0' }
 
 form:
-  validation: strict
   fields:
     enabled:
       type: toggle
@@ -106,3 +107,9 @@ form:
       options:
         and: And - Boolean &&
         or: Or - Boolean ||
+
+    taxonomy_names:
+        type: array
+        label: Taxonomy Names
+        placeholder_key: e.g. month
+        placeholder_value: e.g. archives_month

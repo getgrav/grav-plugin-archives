@@ -1,3 +1,13 @@
+# v1.6.1
+## 2/24/2020
+
+1. [](#new)
+    * Pass phpstan level 1 tests
+    * Require Grav v.1.6
+1. [](#bugfix)
+    * Exclude empty folders from archive
+    * Fixed issue in 1.7 due to `validation: strict` and missing `taxonomy_names` blueprint item
+
 # v1.6.0
 ## 04/17/2019
 
