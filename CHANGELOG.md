@@ -1,3 +1,9 @@
+# v1.6.1
+## 2/24/2020
+
+1. [](#bugfix)
+    * Fixed issue in 1.7 due to `validation: strict` and missing `taxonomy_names` blueprint item
+
 # v1.6.0
 ## 04/17/2019
 
