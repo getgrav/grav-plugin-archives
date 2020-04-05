@@ -128,8 +128,9 @@ class ArchivesPlugin extends Plugin
                 // Does the page config match route of this current page
                 if (Utils::startsWith($page->route(), $page_url, false)) {
                     $filters = $page_config['filters'] ?? null;
+                    $operator = $page_config['filter_combinator'] ?? 'and';
                     $order = $page_config['order'] ?? null;
-                    $archives = $this->getArchives($filters, $order);
+                    $archives = $this->getArchives($filters, $operator, $order);
                     $archives_url = $this->grav['base_url_absolute'] . $page_url;
                     break;
                 }
@@ -137,8 +138,9 @@ class ArchivesPlugin extends Plugin
         } else {
             // get the plugin filters setting
             $filters = (array) $this->config->get('plugins.archives.filters');
+            $operator = $this->config->get('plugins.archives.filter_combinator');
             $order = $this->config->get('plugins.archives.order');
-            $archives = $this->getArchives($filters, $order);
+            $archives = $this->getArchives($filters, $operator, $order);
         }
 
         // add the archives_start date to the twig variables
@@ -147,7 +149,7 @@ class ArchivesPlugin extends Plugin
         $this->grav['twig']->twig_vars['archives_url'] = $archives_url;
     }
 
-    protected function getArchives($filters, $order)
+    protected function getArchives($filters, $operator, $order)
     {
         $order_by = $order['by'] ?? 'date';
         $order_dir = $order['dir'] ?? 'desc';
@@ -165,7 +167,7 @@ class ArchivesPlugin extends Plugin
         $archives = [];
         $start_date = time();
 
-        $operator = $this->config->get('plugins.archives.filter_combinator');
+
         $new_approach = false;
         $collection = null;
         $page_filter = null;
