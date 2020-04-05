@@ -133,6 +133,7 @@ class ArchivesPlugin extends Plugin
         $filters = (array) $this->config->get('plugins.archives.filters');
         $operator = $this->config->get('plugins.archives.filter_combinator');
         $new_approach = false;
+        $page_approach = false;
         $collection = null;
 
         if (!$filters || (count($filters) === 1 && !reset($filters))){
@@ -151,6 +152,8 @@ class ArchivesPlugin extends Plugin
                 // see if the filter uses the new 'items-type' syntax
                 if ($key === '@self' || $key === 'self@') {
                     $new_approach = true;
+                } elseif ($key === '@page' || $key === 'page@') {
+                    $page_approach = true;
                 } elseif ($key === '@taxonomy' || $key === 'taxonomy@') {
                     $taxonomies = $filter === false ? false : array_merge($taxonomies, (array) $filter);
                 } else {
@@ -159,6 +162,8 @@ class ArchivesPlugin extends Plugin
             }
             if ($new_approach) {
                 $collection = $page->children();
+            } elseif ($page_approach) {
+                $collection = $pages->find($filter)->children();
             } else {
                 $collection = new Collection();
                 $collection->append($taxonomy_map->findTaxonomy($find_taxonomy, $operator)->toArray());
@@ -168,6 +173,8 @@ class ArchivesPlugin extends Plugin
         // reorder the collection based on settings
         $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'))->published();
         $date_format = $this->config->get('plugins.archives.date_display_format');
+        // drop unpublished and unroutable pages
+        $collection->published()->routable();
 
         // loop over new collection of pages that match filters
         foreach ($collection as $page) {
