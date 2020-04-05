@@ -6,19 +6,19 @@ limit: 12
 taxonomy_names:
     month: archives_month
     year: archives_year
-#Legacy Approach
+#Defaults
 order:
     by: date
     dir: desc
 filters:
     category: blog
 filter_combinator: and
-#Modern Approach for Archives 2.0+
-#page_specific_config:
-#    '/blog':
-#        order:
-#            by: date
-#            dir: desc
-#        filters:
-#            page@: '/blog'
-#        filter_combinator: and
+#New Page-Specific Configurations
+page_specific_config:
+    -  route: '/blog'
+       order:
+           by: date
+           dir: desc
+       filters:
+           page@: '/blog'
+       filter_combinator: and

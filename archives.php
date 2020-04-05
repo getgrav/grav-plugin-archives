@@ -124,14 +124,14 @@ class ArchivesPlugin extends Plugin
         $archives = $archives_url = null;
 
         if ($page && is_array($page_specific_config)) {
-            foreach ($page_specific_config as $page_url => $page_config) {
+            foreach ($page_specific_config as $page_config) {
                 // Does the page config match route of this current page
-                if (Utils::startsWith($page->route(), $page_url, false)) {
-                    $filters = $page_config['filters'] ?? null;
-                    $operator = $page_config['filter_combinator'] ?? 'and';
-                    $order = $page_config['order'] ?? null;
+                if (isset($page_config['route']) && Utils::startsWith($page->route(), $page_config['route'], false)) {
+                    $filters = $page_config['filters'] ?? (array) $this->config->get('plugins.archives.filters');
+                    $operator = $page_config['filter_combinator'] ?? $this->config->get('plugins.archives.filter_combinator');
+                    $order = $page_config['order'] ?? $this->config->get('plugins.archives.order');
                     $archives = $this->getArchives($filters, $operator, $order);
-                    $archives_url = $this->grav['base_url_absolute'] . $page_url;
+                    $archives_url = $this->grav['base_url_absolute'] . $page_config['route'];
                     break;
                 }
             }

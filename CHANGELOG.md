@@ -4,6 +4,8 @@
 1. [](#new)
     * New per-page configuration to allow for multiple 'archives' in a single site
     * Added new `page@` filter support to allow configuration from page collection [#20](https://github.com/getgrav/grav-plugin-archives/pull/20)
+1. [](#improved)
+    * Added more sort-by options
 
 # v1.6.1
 ## 02/24/2020
