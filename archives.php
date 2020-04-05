@@ -8,6 +8,7 @@ use Grav\Common\Plugin;
 use Grav\Common\Page\Collection;
 use Grav\Common\Taxonomy;
 use Grav\Common\Utils;
+use Grav\Common\Yaml;
 use RocketTheme\Toolbox\Event\Event;
 
 class ArchivesPlugin extends Plugin
@@ -128,12 +129,18 @@ class ArchivesPlugin extends Plugin
                 // Does the page config match route of this current page
                 if (isset($page_config['route']) && Utils::startsWith($page->route(), $page_config['route'], false)) {
                     $filters = $page_config['filters'] ?? (array) $this->config->get('plugins.archives.filters');
+
+                    // get around limitation of no YAML filtering support in list field
+                    if (is_string($filters)) {
+                        $filters = Yaml::parse($filters);
+                    }
+
                     $operator = $page_config['filter_combinator'] ?? $this->config->get('plugins.archives.filter_combinator');
                     $order = [
                         'by' => $page_config['order_by'] ?? $this->config->get('plugins.archives.order.by'),
                         'dir' => $page_config['order_dir'] ?? $this->config->get('plugins.archives.order.dir')
                     ];
-                    $archives = $this->getArchives($filters, $operator, $order);
+                    $archives = $this->getArchives((array)$filters, $operator, $order);
                     $archives_url = $this->grav['base_url_absolute'] . $page_config['route'];
                     break;
                 }
@@ -143,7 +150,7 @@ class ArchivesPlugin extends Plugin
             $filters = (array) $this->config->get('plugins.archives.filters');
             $operator = $this->config->get('plugins.archives.filter_combinator');
             $order = $this->config->get('plugins.archives.order');
-            $archives = $this->getArchives($filters, $operator, $order);
+            $archives = $this->getArchives((array)$filters, $operator, $order);
         }
 
         // add the archives_start date to the twig variables

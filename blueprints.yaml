@@ -110,6 +110,8 @@ form:
       yaml: true
       label: Filter
       placeholder: "page@: '/blog'"
+      validate:
+        type: yaml
 
     filter_combinator:
       type: select
@@ -143,7 +145,7 @@ form:
           label: Filter
           placeholder: "page@: '/blog'"
           validate:
-            required: true
+            type: yaml
         .filter_combinator:
           type: select
           size: medium
