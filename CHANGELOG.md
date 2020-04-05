@@ -1,5 +1,12 @@
+# v2.0.0
+## mm/dd/2020
+
+1. [](#new)
+    * New per-page configuration to allow for multiple 'archives' in a single site
+    * Added new `page@` filter support to allow configuration from page collection [#20](https://github.com/getgrav/grav-plugin-archives/pull/20)
+
 # v1.6.1
-## 2/24/2020
+## 02/24/2020
 
 1. [](#new)
     * Pass phpstan level 1 tests
