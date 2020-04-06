@@ -1,5 +1,5 @@
 # v2.0.0
-## mm/dd/2020
+## 04/06/2020
 
 1. [](#new)
     * New per-page configuration to allow for multiple 'archives' in a single site
