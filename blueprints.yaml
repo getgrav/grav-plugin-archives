@@ -1,5 +1,5 @@
 name: Archives
-version: 1.6.1
+version: 2.0.0
 description: The **Archives** plugin creates links for pages grouped by month/year
 icon: university
 author:
@@ -71,14 +71,16 @@ form:
         type: number
         min: 1
 
-    order.dir:
-      type: toggle
-      label: Order Direction
-      highlight: asc
-      default: desc
-      options:
-        asc: Ascending
-        desc: Descending
+    taxonomy_names:
+        type: array
+        label: Taxonomy Names
+        placeholder_key: e.g. month
+        placeholder_value: e.g. archives_month
+
+    defaults_section:
+        type: section
+        underline: true
+        title: Default Configuration
 
     order.by:
       type: select
@@ -87,16 +89,29 @@ form:
       label: Order Type
       options:
         default: Default - based on folder name
-        folder: Folder - based on prefix-less folder name
         title: Title - based on title field in header
+        basename: Basename - based on the alphabetic folder name
         date: Date - based on date field in header
+        modified: Modified - based on the modified timestamp
+        folder: Folder - based on prefix-less folder name
+        random: Random - order is randomized
 
-    filters.category:
-      type: selectize
-      label: Category filter
-      help: Comma separated list of category names
+    order.dir:
+      type: select
+      size: medium
+      label: Order Direction
+      default: desc
+      options:
+        asc: Ascending
+        desc: Descending
+
+    filters:
+      type: textarea
+      yaml: true
+      label: Filter
+      placeholder: "page@: '/blog'"
       validate:
-        type: commalist
+        type: yaml
 
     filter_combinator:
       type: select
@@ -105,11 +120,63 @@ form:
       label: Filter Combinator
       default: and
       options:
-        and: And - Boolean &&
-        or: Or - Boolean ||
+        and: 'And - Boolean &&'
+        or: 'Or - Boolean ||'
 
-    taxonomy_names:
-        type: array
-        label: Taxonomy Names
-        placeholder_key: e.g. month
-        placeholder_value: e.g. archives_month
+    pageconfig_section:
+        type: section
+        underline: true
+        title: Page-Specific Configuration
+
+    page_specific_config:
+      type: list
+      label: Configurations
+
+      fields:
+        .route:
+          type: text
+          label: Route
+          placeholder: '/blog'
+          validate:
+            required: true
+        .filters:
+          type: textarea
+          yaml: true
+          label: Filter
+          placeholder: "page@: '/blog'"
+          validate:
+            type: yaml
+        .filter_combinator:
+          type: select
+          size: medium
+          classes: fancy
+          label: Filter Combinator
+          default: ''
+          options:
+            '': Use Default
+            and: 'And - Boolean &&'
+            or: 'Or - Boolean ||'
+        .order_by:
+          type: select
+          size: medium
+          classes: fancy
+          label: Order Type
+          default: ''
+          options:
+            '': Use Default
+            default: Default - based on folder name
+            title: Title - based on title field in header
+            basename: Basename - based on the alphabetic folder name
+            date: Date - based on date field in header
+            modified: Modified - based on the modified timestamp
+            folder: Folder - based on prefix-less folder name
+            random: Random - order is randomized
+        .order_dir:
+          type: select
+          size: medium
+          label: Order Direction
+          default: ''
+          options:
+            '': Use Default
+            asc: Ascending
+            desc: Descending

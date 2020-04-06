@@ -3,9 +3,12 @@ namespace Grav\Plugin;
 
 use Composer\Autoload\ClassLoader;
 use Grav\Common\Page\Interfaces\PageInterface;
+use Grav\Common\Page\Pages;
 use Grav\Common\Plugin;
 use Grav\Common\Page\Collection;
 use Grav\Common\Taxonomy;
+use Grav\Common\Utils;
+use Grav\Common\Yaml;
 use RocketTheme\Toolbox\Event\Event;
 
 class ArchivesPlugin extends Plugin
@@ -112,28 +115,72 @@ class ArchivesPlugin extends Plugin
         /** @var PageInterface $page */
         $page = $this->grav['page'];
 
-        // If a page exists merge the configs
+        // If a page exists merge the archive config if set
         if ($page) {
             $this->config->set('plugins.archives', $this->mergeConfig($page));
         }
+
+        // See if there is page-specific configuration set (new in Archives 2.0)
+        $page_specific_config = $this->config->get('plugins.archives.page_specific_config');
+        $archives = $archives_url = null;
+
+        if ($page && is_array($page_specific_config)) {
+            foreach ($page_specific_config as $page_config) {
+                // Does the page config match route of this current page
+                if (isset($page_config['route']) && Utils::startsWith($page->route(), $page_config['route'], false)) {
+                    $filters = $page_config['filters'] ?? (array) $this->config->get('plugins.archives.filters');
+
+                    // get around limitation of no YAML filtering support in list field
+                    if (is_string($filters)) {
+                        $filters = Yaml::parse($filters);
+                    }
+
+                    $operator = $page_config['filter_combinator'] ?? $this->config->get('plugins.archives.filter_combinator');
+                    $order = [
+                        'by' => $page_config['order_by'] ?? $this->config->get('plugins.archives.order.by'),
+                        'dir' => $page_config['order_dir'] ?? $this->config->get('plugins.archives.order.dir')
+                    ];
+                    $archives = $this->getArchives((array)$filters, $operator, $order);
+                    $archives_url = $this->grav['base_url_absolute'] . $page_config['route'];
+                    break;
+                }
+            }
+        } else {
+            // get the plugin filters setting
+            $filters = (array) $this->config->get('plugins.archives.filters');
+            $operator = $this->config->get('plugins.archives.filter_combinator');
+            $order = $this->config->get('plugins.archives.order');
+            $archives = $this->getArchives((array)$filters, $operator, $order);
+        }
+
+        // add the archives_start date to the twig variables
+        $this->grav['twig']->twig_vars['archives_show_count'] = $this->config->get('plugins.archives.show_count');
+        $this->grav['twig']->twig_vars['archives_data'] = $archives;
+        $this->grav['twig']->twig_vars['archives_url'] = $archives_url;
+    }
+
+    protected function getArchives($filters, $operator, $order)
+    {
+        $order_by = $order['by'] ?? 'date';
+        $order_dir = $order['dir'] ?? 'desc';
+
+        /** @var Pages $pages */
+        $pages = $this->grav['pages'];
+
+        /** @var PageInterface $page */
+        $page = $this->grav['page'];
 
         /** @var Taxonomy $taxonomy_map */
         $taxonomy_map = $this->grav['taxonomy'];
         $taxonomies = [];
         $find_taxonomy = [];
-
-        $pages = $this->grav['pages'];
-
-        // Get current datetime
+        $archives = [];
         $start_date = time();
 
-        $archives = [];
 
-        // get the plugin filters setting
-        $filters = (array) $this->config->get('plugins.archives.filters');
-        $operator = $this->config->get('plugins.archives.filter_combinator');
         $new_approach = false;
         $collection = null;
+        $page_filter = null;
 
         if (!$filters || (count($filters) === 1 && !reset($filters))){
             $collection = $pages->all();
@@ -151,6 +198,8 @@ class ArchivesPlugin extends Plugin
                 // see if the filter uses the new 'items-type' syntax
                 if ($key === '@self' || $key === 'self@') {
                     $new_approach = true;
+                } elseif ($key === '@page' || $key === 'page@') {
+                    $page_filter = $filter;
                 } elseif ($key === '@taxonomy' || $key === 'taxonomy@') {
                     $taxonomies = $filter === false ? false : array_merge($taxonomies, (array) $filter);
                 } else {
@@ -159,6 +208,8 @@ class ArchivesPlugin extends Plugin
             }
             if ($new_approach) {
                 $collection = $page->children();
+            } elseif ($page_filter) {
+                $collection = $pages->find($page_filter)->children();
             } else {
                 $collection = new Collection();
                 $collection->append($taxonomy_map->findTaxonomy($find_taxonomy, $operator)->toArray());
@@ -166,22 +217,21 @@ class ArchivesPlugin extends Plugin
         }
 
         // reorder the collection based on settings
-        $collection = $collection->order($this->config->get('plugins.archives.order.by'), $this->config->get('plugins.archives.order.dir'))->published();
+        $collection = $collection->order($order_by, $order_dir)->published();
         $date_format = $this->config->get('plugins.archives.date_display_format');
+        // drop unpublished and un-routable pages
+        $collection->published()->routable();
 
         // loop over new collection of pages that match filters
         foreach ($collection as $page) {
             // update the start date if the page date is older
             $start_date = $page->date() < $start_date ? $page->date() : $start_date;
-
             $archives[date($date_format, $page->date())][] = $page;
         }
 
         // slice the array to the limit you want
         $archives = array_slice($archives, 0, (int)$this->config->get('plugins.archives.limit'), is_string(reset($archives)) ? false : true );
 
-        // add the archives_start date to the twig variables
-        $this->grav['twig']->twig_vars['archives_show_count'] = $this->config->get('plugins.archives.show_count');
-        $this->grav['twig']->twig_vars['archives_data'] = $archives;
+        return $archives;
     }
 }

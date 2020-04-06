@@ -28,7 +28,7 @@ You should now have all the plugin files under
 
 # Usage
 
-The `archives` plugin comes with some sensible default configuration, that are pretty self explanatory:
+The `archives` plugin comes with some sensible default configuration, that are pretty self-explanatory:
 
 # Config Defaults
 
@@ -38,24 +38,72 @@ built_in_css: true
 date_display_format: 'F Y'
 show_count: true
 limit: 12
+taxonomy_names:
+    month: archives_month
+    year: archives_year
+#Defaults
 order:
     by: date
     dir: desc
 filters:
     category: blog
-taxonomy_names:
-    month: archives_month
-    year: archives_year
-
+filter_combinator: and
+#New Page-Specific Configurations
+page_specific_config:
+    -  route: '/blog'
+       order:
+           by: date
+           dir: desc
+       filters:
+           page@: '/blog'
+       filter_combinator: and
 ```
 
 If you need to change any value, then the best process is to copy the [archives.yaml](archives.yaml) file into your `users/config/plugins/` folder (create it if it doesn't exist), and then modify there.  This will override the default settings.
 
-You can also list the current collection, without having to search for a taxonomy term by using
+## Filter Types
+
+#### category
+
+The legacy approach is to provide a specific category taxonomy filter, or multiple categories:
 
 ```
 filters:
-    - '@self'
+    category 'blog-post'
+```
+
+#### taxonomy@
+
+You can use sophisticated taxonomy filtering with the same mechanism as page taxonomy filtering:
+
+```
+filters:
+    taxonomy@.tag: photography # taxonomy called tag is set to photography
+```
+
+or:
+
+```
+filters:
+    taxonomy@: {tag: birds, category: blog}	 # taxonomy with tag=birds && category=blog
+```
+
+#### page@
+
+You can reference a specific page's collection via the page@ filter:
+
+```
+filters:
+    page@: '/blog' # Use the collection defined in the header of `/blog` page
+```
+
+#### self@
+
+You can also list the current children, without having to search for a taxonomy term by using
+
+```
+filters:
+    - self@ # use the children defined in the current page
 ```
 
 # Template Override
