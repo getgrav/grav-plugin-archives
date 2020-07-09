@@ -127,7 +127,9 @@ class ArchivesPlugin extends Plugin
         if ($page && is_array($page_specific_config)) {
             foreach ($page_specific_config as $page_config) {
                 // Does the page config match route of this current page
-                if (isset($page_config['route']) && Utils::startsWith($page->route(), $page_config['route'], false)) {
+                if (isset($page_config['route']) &&
+                    (Utils::startsWith($page->route(), $page_config['route'], false) ||
+                     Utils::startsWith($page->rawRoute(), $page_config['route'], false))) {
                     $filters = $page_config['filters'] ?? (array) $this->config->get('plugins.archives.filters');
 
                     // get around limitation of no YAML filtering support in list field
