@@ -1,5 +1,5 @@
 # v2.0.1
-## mm/dd/2020
+## 07/09/2020
 
 1. [](#bugfix)
     * Fix for archives on homepage [#26](https://github.com/getgrav/grav-plugin-archives/issues/26)  
