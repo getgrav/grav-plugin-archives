@@ -224,9 +224,9 @@ class ArchivesPlugin extends Plugin
                 }
             }
             if ($new_approach) {
-                $collection = $page->children();
+                $collection = $page->collection('content', false);
             } elseif ($page_filter) {
-                $collection = $pages->find($page_filter)->children();
+                $collection = $pages->find($page_filter)->collection('content', false);
             } else {
                 $collection = new Collection();
                 $collection->append($taxonomy_map->findTaxonomy($find_taxonomy, $operator)->toArray());
