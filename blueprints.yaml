@@ -79,6 +79,12 @@ form:
         placeholder_key: e.g. month
         placeholder_value: e.g. archives_month
 
+    taxonomy_values:
+      type: array
+      label: Taxonomy Values (date format)
+      placeholder_key: e.g. month
+      placeholder_value: e.g. 'M_Y'
+
     defaults_section:
         type: section
         underline: true
