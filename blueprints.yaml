@@ -53,6 +53,7 @@ form:
         'd-m-y': "01-01-14"
         'jS M Y': "10th Feb 2014"
         'F Y': "Jan 2015"
+        'Y-m': "2015-01"
 
     show_count:
       type: toggle
