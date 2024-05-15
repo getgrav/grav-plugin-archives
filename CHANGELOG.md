@@ -1,3 +1,9 @@
+# v2.0.1
+## mm/dd/2024
+
+1. [](#new)
+   * Added a new `partials/archives-year.html.twig` example and instructions on how to display a year-only format.
+
 # v2.0.2
 ## 12/02/2020
 
