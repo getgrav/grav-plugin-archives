@@ -1,3 +1,10 @@
+# v2.0.3.1
+## 05/16/2024
+
+1. [](#improved)
+   * Added missing `Y` date format option from blueprints (admin plugin)
+
+
 # v2.0.3
 ## 05/15/2024
 
