@@ -120,21 +120,39 @@ You can now edit the override and tweak it however you prefer.
 
 # Archives by Year example
 
-The default `archives_data` object will contain pages broken out into groupings based on the `date_display_format` which by default is `F Y`, for example (`May 2024`).  If you want to display the archives by the "Year" only, rather than "Month Year", you need to modify the `data_display_format` in the `archives.yaml` configuration file:
+The default `archives_data` object will contain pages broken out into groupings based on the `date_display_format` which by default is `F Y`, for example (`May 2024`).  If you want to display the archives by the "Year" only, rather than "Month Year", you need to modify the `date_display_format` in the `archives.yaml` configuration file:
 
 ```yaml
 date_display_format: 'Y'
 ```
-Now the data will be grouped by year only. 
+Now the data will be grouped by year only.
 
-Next, you will need to override and modify the `partials/archives.html.twig` file, or alternatively point to the new example `partials/archives-year.html.twig` file.  This is modified to use the following syntax:
+Next you need your theme to render the year template instead of the default one. The plugin never chooses a template itself. All it does is add its own `templates` folder to Twig's list of search paths and set the `archives_data`, `archives_show_count` and `archives_url` variables. Your **theme** decides what actually gets rendered, and Quark (like most themes derived from it) hardcodes `{% include 'partials/archives.html.twig' %}` in `templates/partials/sidebar.html.twig`. That is the name you have to answer, so that is the file you create.
+
+Because the plugin's `templates` folder is already on Twig's search path, `partials/archives-year.html.twig` can be included by name from anywhere with no copying required. Create a real file at:
+
+```
+/your/site/grav/user/themes/custom-theme/templates/partials/archives.html.twig
+```
+
+containing a single line:
+
+```twig
+{% include 'partials/archives-year.html.twig' %}
+```
+
+Your theme's include now resolves to that one-line file, which in turn pulls in the plugin's year template. Clear the cache with `bin/grav clear-cache` and the archives will be grouped by year.
+
+>> WARNING: Make that a real file, never a symlink into `user/plugins/archives/`. The plugin folder is deleted and replaced on every update, so the link breaks each time you update the plugin, and Grav reports nothing when it does — Twig quietly skips the dangling path and falls through to the plugin's own month-based template. The site simply reverts to month grouping with mangled labels and no indication of why. Symlinks under `user/` are also flattened or dropped entirely by rsync-style deploys, and can trip `open_basedir` restrictions on shared hosting.
+
+If you would rather not depend on a template that lives inside the plugin, copy the contents of [templates/partials/archives-year.html.twig](templates/partials/archives-year.html.twig) into your theme's `partials/archives.html.twig` instead of including it:
 
 ```twig
 <ul class="archives">
 
 {% for year,items in archives_data %}
     <li>
-    	<a href="{{ archives_url ?? base_url }}/{{ config.plugins.archives.taxonomy_names.year }}{{ config.system.param_sep }}{{ year|date(config.plugins.archives.taxonomy_values.year)|lower|e('url') }}">
+    	<a href="{{ archives_url ?? base_url }}/{{ config.plugins.archives.taxonomy_names.year }}{{ config.system.param_sep }}{{ year|lower|e('url') }}">
         {% if archives_show_count %}
         <span class="label">{{ items|length }}</span>
         {% endif %}
@@ -145,7 +163,7 @@ Next, you will need to override and modify the `partials/archives.html.twig` fil
 </ul>
 ```
 
-This is very similar to the default `partials/archives.html.twig` with `month` changed to `year`.
+This is very similar to the default `partials/archives.html.twig` with `month` changed to `year`. Note that the `year` key is already the finished string (`2024`) that `date_display_format` produced, so it is used as-is — passing it through Twig's `date` filter would render every link as `1970`.
 
 # Updating
 
