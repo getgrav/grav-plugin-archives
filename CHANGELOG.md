@@ -1,3 +1,11 @@
+# v2.0.5
+## 08/28/2026
+
+1. [](#improved)
+    * Rewrote the "Archives by Year" README instructions to explain the file your theme actually needs, and warned against using a symlink for it because it breaks silently on every plugin update [#39](https://github.com/getgrav/grav-plugin-archives/issues/39)
+    * Fixed the year example in the README so its links point at the right year instead of 1970
+    * Corrected the misspelled `date_display_format` option name in the README
+
 # v2.0.4
 ## 04/29/2026
 
