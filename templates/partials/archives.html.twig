@@ -1,3 +1,6 @@
+{% if config.plugins.archives.date_display_format == 'Y' %}
+{% include 'partials/archives-year.html.twig' %}
+{% else %}
 <ul class="archives">
 
 {% for month,items in archives_data %}
@@ -11,3 +14,4 @@
     </li>
 {% endfor %}
 </ul>
+{% endif %}

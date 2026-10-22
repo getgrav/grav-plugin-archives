@@ -125,9 +125,9 @@ The default `archives_data` object will contain pages broken out into groupings 
 ```yaml
 date_display_format: 'Y'
 ```
-Now the data will be grouped by year only.
+Now the data will be grouped by year only, and the plugin's default `partials/archives.html.twig` template (as well as the ones shipped with Quark and Quark2) switches to the year layout automatically, with each year linking to its `archives_year` listing. Clear the cache with `bin/grav clear-cache` and you're done.
 
-Next you need your theme to render the year template instead of the default one. The plugin never chooses a template itself. All it does is add its own `templates` folder to Twig's list of search paths and set the `archives_data`, `archives_show_count` and `archives_url` variables. Your **theme** decides what actually gets rendered, and Quark (like most themes derived from it) hardcodes `{% include 'partials/archives.html.twig' %}` in `templates/partials/sidebar.html.twig`. That is the name you have to answer, so that is the file you create.
+If your theme ships its own `partials/archives.html.twig` that only knows about months, or you want to customise the year layout, you can point your theme at the plugin's year template instead. The plugin never chooses a template itself. All it does is add its own `templates` folder to Twig's list of search paths and set the `archives_data`, `archives_show_count` and `archives_url` variables. Your **theme** decides what actually gets rendered, and Quark (like most themes derived from it) hardcodes `{% include 'partials/archives.html.twig' %}` in `templates/partials/sidebar.html.twig`. That is the name you have to answer, so that is the file you create.
 
 Because the plugin's `templates` folder is already on Twig's search path, `partials/archives-year.html.twig` can be included by name from anywhere with no copying required. Create a real file at:
 
@@ -141,9 +141,9 @@ containing a single line:
 {% include 'partials/archives-year.html.twig' %}
 ```
 
-Your theme's include now resolves to that one-line file, which in turn pulls in the plugin's year template. Clear the cache with `bin/grav clear-cache` and the archives will be grouped by year.
+Your theme's include now resolves to that one-line file, which in turn pulls in the plugin's year template.
 
->> WARNING: Make that a real file, never a symlink into `user/plugins/archives/`. The plugin folder is deleted and replaced on every update, so the link breaks each time you update the plugin, and Grav reports nothing when it does — Twig quietly skips the dangling path and falls through to the plugin's own month-based template. The site simply reverts to month grouping with mangled labels and no indication of why. Symlinks under `user/` are also flattened or dropped entirely by rsync-style deploys, and can trip `open_basedir` restrictions on shared hosting.
+>> WARNING: Make that a real file, never a symlink into `user/plugins/archives/`, and don't edit the plugin's own templates either. The plugin folder is deleted and replaced on every update, so edits are lost and links break each time you update the plugin, and Grav reports nothing when a link breaks. Symlinks under `user/` are also flattened or dropped entirely by rsync-style deploys, and can trip `open_basedir` restrictions on shared hosting.
 
 If you would rather not depend on a template that lives inside the plugin, copy the contents of [templates/partials/archives-year.html.twig](templates/partials/archives-year.html.twig) into your theme's `partials/archives.html.twig` instead of including it:
 
