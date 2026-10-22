@@ -1,3 +1,9 @@
+# v2.0.6
+## 10/22/2026
+
+1. [](#bugfix)
+    * Setting the date format to `Y` now lists the archives by year out of the box, instead of showing every entry as 1970 [#39](https://github.com/getgrav/grav-plugin-archives/issues/39)
+
 # v2.0.5
 ## 08/28/2026
 
